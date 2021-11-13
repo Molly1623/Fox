@@ -4,31 +4,69 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Rigidbody2D rb;//public会生成一个变量，出现在unity界面
+    private Rigidbody2D rb;//public会生成一个变量，出现在unity界面
     public float speed;
+    private Animator anim;
+    public Collider2D coll;
+    public float jumpforce;
+    public LayerMask ground;
     // Start is called before the first frame update
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         Movement();
+        SwitchAnim();
     }
     void Movement()
     {
-        float horizontalmove = Input.GetAxis("Horizontal");//获取其移动方向，horizontal指的是横向,然后赋值给horizontalmove，当玩家往左它的值为-1，不动0，右1;
-        float facedirection = Input.GetAxisRaw("Horizontal");//GetAxisRaw的意思是只获取-1，0，1而不是（-1，1）的任何数，在scale中x的正和负可以改变人物方向
-        if(horizontalmove != 0)
-        {
-            rb.velocity = new Vector2(horizontalmove * speed, rb.velocity.y);//velocity刚体速度变化,vector2:2d平面上xy轴的变化，横向移动y轴不动
+        float horizontalmove = Input.GetAxis("Horizontal");     
+        float facedirection = Input.GetAxisRaw("Horizontal");
 
-        }
-        if(facedirection != 0)
+        //水平移动  
+        if (horizontalmove != 0)
         {
-            transform.localScale = new Vector3(facedirection, 1, 1);//transform是缩放比例所在的函数栏，因为scale是三维的，所以vector3，只改变x变量
+            rb.velocity = new Vector2(horizontalmove*speed* Time.deltaTime, rb.velocity.y);
+            anim.SetBool("Run", true);
+        }
+        else if(horizontalmove == 0)
+        {
+            anim.SetBool("Idle", true);
+            anim.SetBool("Run", false);
+        }
+        //判断面向左还是右
+        if (facedirection != 0)
+        {
+            transform.localScale = new Vector3(facedirection, 1, 1);
+        }
+        //角色跳跃
+        if(Input.GetButtonDown("Jump"))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpforce * Time.deltaTime);
+            anim.SetBool("IsJump", true);
+        }
+    }
+    void SwitchAnim()
+    {
+        anim.SetBool("Idle", true);
+        if(anim.GetBool("IsJump"))
+        {
+            if(rb.velocity.y < 0)
+            {
+                anim.SetBool("Falling", true);
+                anim.SetBool("IsJump", false);
+            }
+        }
+        else if(coll.IsTouchingLayers(ground))
+        {
+            anim.SetBool("Falling", false);
+            anim.SetBool("Idle", true);
+            
         }
     }
 }
