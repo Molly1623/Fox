@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PlayerController : MonoBehaviour
     public Collider2D coll;
     public float jumpforce;
     public LayerMask ground;
+    public int Cherry =0;
+    public Text CherryNum;
     // Start is called before the first frame update
     void Start()
     {
@@ -45,12 +48,16 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(facedirection, 1, 1);
         }
         //角色跳跃
-        if(Input.GetButtonDown("Jump"))
+        if(Input.GetButtonDown("Jump"))//&&coll.IsTouchingLayers(ground)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpforce * Time.deltaTime);
-            anim.SetBool("IsJump", true);
+            if (coll.IsTouchingLayers(ground))
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpforce * Time.deltaTime);
+                anim.SetBool("IsJump", true);
+            }
         }
     }
+    //切换动画效果
     void SwitchAnim()
     {
         anim.SetBool("Idle", true);
@@ -67,6 +74,17 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("Falling", false);
             anim.SetBool("Idle", true);
             
+        }
+  
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "Collection")
+        {
+            Destroy(collision.gameObject);
+            Cherry += 1;
+            CherryNum.text = Cherry.ToString();
         }
     }
 }

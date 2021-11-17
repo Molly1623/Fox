@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Collection
   layers:
   - Default
   - TransparentFX
@@ -44,9 +45,15 @@ TagManager:
   - name: Background
     uniqueID: 577866059
     locked: 0
+  - name: Environment
+    uniqueID: 682492041
+    locked: 0
+  - name: Fox
+    uniqueID: 1929164953
+    locked: 0
   - name: Frontground
     uniqueID: 1688820341
     locked: 0
-  - name: grass
-    uniqueID: 3990394803
+  - name: Ground
+    uniqueID: 1039620469
     locked: 0
