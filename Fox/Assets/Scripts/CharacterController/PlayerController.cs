@@ -87,4 +87,17 @@ public class PlayerController : MonoBehaviour
             CherryNum.text = Cherry.ToString();
         }
     }
+    //消灭敌人
+    private void OnCollisionEnter2D(Collision2D collision)//OnCollisonEnter2D效果发生时
+    {
+        if (anim.GetBool("Falling"))
+        {
+            if ((collision.gameObject.tag == "Enemy"))
+            {
+                Destroy(collision.gameObject);
+                rb.velocity = new Vector2(rb.velocity.x, jumpforce * Time.deltaTime);
+                anim.SetBool("IsJump", true);
+            }
+        }
+    }
 }
